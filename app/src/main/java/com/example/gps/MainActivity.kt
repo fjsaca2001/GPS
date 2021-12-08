@@ -20,7 +20,6 @@ class MainActivity : AppCompatActivity() {
 
     // Declaracion de variables para la locacion
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    lateinit var locationRequest: LocationRequest
     val idPermiso = 80
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,6 +75,8 @@ class MainActivity : AppCompatActivity() {
             // Verificamos si la localizacion esta habilitada
             if(hablilitarLocacion()){
                 // Obtencion de la locaizacion
+
+
                 if (ActivityCompat.checkSelfPermission(
                         this,
                         Manifest.permission.ACCESS_FINE_LOCATION
@@ -112,55 +113,15 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    // 5. Debemos crear una funcion para poder ir actualizando la ubicacion.
-    /*fun actualizaUbicacion(){
-        locationRequest = LocationRequest()
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = 0
-        locationRequest.fastestInterval = 0
-        locationRequest.numUpdates = 1
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
-        }
-        fusedLocationProviderClient!!.requestLocationUpdates(
-            locationRequest,agregarLocacion, Looper.myLooper()
-        )
-    }*/
-
-    // 5.1 obtenermos los datos de latitud y longitud para agregarlo a nuestra pantalla
-    private val agregarLocacion = object : LocationCallback(){
-        override fun onLocationResult(locationResult: LocationResult) {
-            var lastLocation: Location = locationResult.lastLocation
-            var txtLocation = findViewById<TextView>(R.id.txtLocation)
-            println("Nueva Ubicacion")
-            txtLocation.text = "Tu ultima ubicación es:\nLongitud: "+ lastLocation.longitude + "\nLatitud: " + lastLocation.latitude + "\n" + obtenerCiudad(lastLocation.latitude,lastLocation.longitude)
-        }
-    }
-
-    // 6. Tenemos la latitud y longitud, gracais a decoder transformamos estos valores a ciudad.
+    // 6. Tenemos la latitud y longitud, gracais a Geocoder transformamos estos valores a ciudad.
     private fun obtenerCiudad(lat: Double,long: Double):String{
-        var cityName:String = ""
-        var countryName = ""
+        var ciudad:String = ""
+        var pais = ""
         var geoCoder = Geocoder(this, Locale.getDefault())
         var Adress = geoCoder.getFromLocation(lat,long,3)
 
-        cityName = Adress.get(0).locality
-        countryName = Adress.get(0).countryName
-        return "Ciudad: " + cityName + " Pais: " + countryName
+        ciudad = Adress.get(0).locality
+        pais = Adress.get(0).countryName
+        return "Lugar: " + ciudad + " Pais: " + pais
     }
 }
